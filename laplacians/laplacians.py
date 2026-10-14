@@ -196,5 +196,56 @@ def persistent_Laplacian_eigenvalues(boundary_matrices = None, simplices_at_time
 
                 Lap = persistent_Laplacian(q, s_i=s_i, t_i=t_i, boundary_matrices=boundary_matrices, simplices_at_time=simplices_at_time, up_only=up_only, inverse_method=inverse_method)
                 
-                eigenvalues[q][s][t] = np.linalg.eigvals(Lap).real
+                eigenvalues[q][s][t] = np.linalg.eigvalsh(Lap)
+    return eigenvalues, relevant_times
+
+def horizontal_eigenvalues(boundary_matrices = None, simplices_at_time = None, f: dio.Filtration = None,
+                                     weight_fun = lambda x: 1, max_dim = 1, up_only=False, inverse_method = "compute_inverse"):
+    assert (boundary_matrices is not None and simplices_at_time is not None) or f is not None, "Either boundary_matrices and simplices_at_time or filtration f must be provided"
+
+    if f is not None:
+        boundary_matrices, simplices_at_time, relevant_times = compute_boundary_matrices(f, weight_fun)
+
+    eigenvalues = {q: {s: {t: np.array([]) for t in relevant_times} for s in relevant_times} for q in range(max_dim+1)}
+    
+    for q in range(max_dim+1):
+        s_i_bar = tqdm(range(len(relevant_times)), leave=False, desc=f"Computing eigenvalues for q={q}")
+        for s_i in s_i_bar:
+            prev_Lap = None
+            for t_i in range(s_i, len(relevant_times)):
+                s_i_bar.set_description(f"s_i: {s_i}/{t_i}")
+                s, t = relevant_times[s_i], relevant_times[t_i]
+
+                Lap = persistent_Laplacian(q, s_i=s_i, t_i=t_i, boundary_matrices=boundary_matrices, simplices_at_time=simplices_at_time, up_only=up_only, inverse_method=inverse_method)
+                if prev_Lap is not None:
+                    eigenvalues[q][s][t] = np.linalg.eigvalsh(Lap-prev_Lap)
+                else:
+                    eigenvalues[q][s][t] = np.array([])#np.linalg.eigvalsh(Lap)
+                prev_Lap = deepcopy(Lap)
+    return eigenvalues, relevant_times
+
+def vertical_eigenvalues(boundary_matrices = None, simplices_at_time = None, f: dio.Filtration = None,
+                                     weight_fun = lambda x: 1, max_dim = 1, up_only=False, inverse_method = "compute_inverse"):
+    assert (boundary_matrices is not None and simplices_at_time is not None) or f is not None, "Either boundary_matrices and simplices_at_time or filtration f must be provided"
+
+    if f is not None:
+        boundary_matrices, simplices_at_time, relevant_times = compute_boundary_matrices(f, weight_fun)
+
+    eigenvalues = {q: {s: {t: np.array([]) for t in relevant_times} for s in relevant_times} for q in range(max_dim+1)}
+    
+    for q in range(max_dim+1):
+        t_i_bar = tqdm(range(len(relevant_times)), leave=False, desc=f"Computing eigenvalues for q={q}")
+        for t_i in t_i_bar:
+            prev_Lap = None
+            for s_i in range(t_i+1):
+                t_i_bar.set_description(f"s_i: {s_i}/{t_i}")
+                s, t = relevant_times[s_i], relevant_times[t_i]
+
+                Lap = persistent_Laplacian(q, s_i=s_i, t_i=t_i, boundary_matrices=boundary_matrices, simplices_at_time=simplices_at_time, up_only=up_only, inverse_method=inverse_method)
+                if prev_Lap is not None:
+                    prev_Lap = np.pad(prev_Lap, ((0, Lap.shape[0]-prev_Lap.shape[0]), (0, Lap.shape[1]-prev_Lap.shape[1])), mode='constant', constant_values=0)
+                    eigenvalues[q][s][t] = np.linalg.eigvalsh(Lap-prev_Lap)
+                else:
+                    eigenvalues[q][s][t] = np.linalg.eigvalsh(Lap)
+                prev_Lap = deepcopy(Lap)
     return eigenvalues, relevant_times
