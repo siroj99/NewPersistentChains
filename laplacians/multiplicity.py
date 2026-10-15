@@ -144,7 +144,7 @@ def complete_multiplicity_operator_eigenvalues(boundary_matrices = None, simplic
         downLaps = {}
 
     for q in range(min_dim, max_dim+1):
-        if boundary_matrices[q+1].shape[1] == 0:
+        if len(boundary_matrices) <= q+1 or boundary_matrices[q+1].shape[1] == 0:
             continue
 
         # n_simplices_to_time[q+1][0] = relevant_times[0]
@@ -405,19 +405,19 @@ def complete_multiplicity_operator_eigenvalues(boundary_matrices = None, simplic
 
 
     if not up_only and not fill_eigenvalues:
-      for q in range(max_dim, min_dim-1, -1):
-        if q-1 in downLaps:
-            for s in eigenvalues[q].keys():
-                s_i = time_to_idx(s, relevant_times)
-                for k in downLaps[q-1].keys():
-                    if s_i in k:
-                        down_evals = return_pos_evals(eigenvalues[q-1][relevant_times[downLaps[q-1][k][0]]][relevant_times[downLaps[q-1][k][1]]])
-                        for t in eigenvalues[q][s].keys():
-                            if len(eigenvalues[q][s][t]) > 0:
-                                eigenvalues[q][s][t].sort()
-                                eigenvalues[q][s][t][:len(down_evals)] = down_evals
-                            # elif s == t and simplices_at_time[s_i][q] > simplices_at_time[s_i-1][q]:
-                            #     eigenvalues[q][s][t] = down_evals
+        for q in range(max_dim, min_dim-1, -1):
+            if q-1 in downLaps:
+                for s in eigenvalues[q].keys():
+                    s_i = time_to_idx(s, relevant_times)
+                    for k in downLaps[q-1].keys():
+                        if s_i in k:
+                            down_evals = return_pos_evals(eigenvalues[q-1][relevant_times[downLaps[q-1][k][0]]][relevant_times[downLaps[q-1][k][1]]])
+                            for t in eigenvalues[q][s].keys():
+                                if len(eigenvalues[q][s][t]) > 0:
+                                    eigenvalues[q][s][t].sort()
+                                    eigenvalues[q][s][t][:len(down_evals)] = down_evals
+                                # elif s == t and simplices_at_time[s_i][q] > simplices_at_time[s_i-1][q]:
+                                #     eigenvalues[q][s][t] = down_evals
 
 
     if fill_eigenvalues:
