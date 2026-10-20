@@ -3,6 +3,12 @@ from copy import deepcopy
 import dionysus as dio
 from tqdm.auto import tqdm
 
+def gudhi_to_dio(st, decimals=10):
+    f = dio.Filtration()
+    for vertices, time in st.get_filtration():
+        f.append(dio.Simplex(vertices, round(time, decimals)))
+    return f
+
 def time_to_idx(t, relevant_times):
     """
     Returns the index of the time t in the relevant_times array.

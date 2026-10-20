@@ -159,6 +159,9 @@ def persistent_Laplacian(q, s=None, t=None, s_i=None, t_i=None,
     if f is not None:
         boundary_matrices, simplices_at_time, relevant_times = compute_boundary_matrices(f)
 
+    if len(boundary_matrices) <= q:
+        return None
+
     if s_i is None:
         s_i = time_to_idx(s, relevant_times)
     if t_i is None:
@@ -195,8 +198,9 @@ def persistent_Laplacian_eigenvalues(boundary_matrices = None, simplices_at_time
                 s, t = relevant_times[s_i], relevant_times[t_i]
 
                 Lap = persistent_Laplacian(q, s_i=s_i, t_i=t_i, boundary_matrices=boundary_matrices, simplices_at_time=simplices_at_time, up_only=up_only, inverse_method=inverse_method)
-                
-                eigenvalues[q][s][t] = np.linalg.eigvalsh(Lap)
+
+                if Lap is not None:
+                    eigenvalues[q][s][t] = np.linalg.eigvalsh(Lap)
     return eigenvalues, relevant_times
 
 def horizontal_eigenvalues(boundary_matrices = None, simplices_at_time = None, f: dio.Filtration = None,

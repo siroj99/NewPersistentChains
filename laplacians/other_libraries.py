@@ -1,6 +1,10 @@
 import petls
 import numpy as np
 from copy import deepcopy
+import dionysus as dio
+from.general import compute_boundary_matrices, time_to_idx, gudhi_to_dio
+from .multiplicity import standard_algorithm, lowest_nonzero_row, return_pos_evals
+import gudhi as gd
 
 def petls_output_to_eigenvalues(spectra, eigenvalues = None, round_to = 5):
     if eigenvalues is None:
@@ -21,12 +25,15 @@ def petls_output_to_eigenvalues(spectra, eigenvalues = None, round_to = 5):
     relevant_times = np.array(sorted(list(set(relevant_times))))
     return eigenvalues, relevant_times
 
-import dionysus as dio
-from.general import compute_boundary_matrices, time_to_idx
-from .multiplicity import standard_algorithm, lowest_nonzero_row, return_pos_evals
-
-def petls_Rips_combined(points, threshold, max_dim, round_to = 5, fill_eigenvalues = False):
-    f = dio.fill_rips(points, max_dim, threshold)
+def petls_combined(points, threshold, max_dim, f = None, petls_complex=None, round_to = 5, fill_eigenvalues = False, filtration_type = "rips"):
+    if f is None:
+        if filtration_type == "rips":
+            f = dio.fill_rips(points, max_dim, threshold)
+        elif filtration_type == "alpha":
+            st = gd.AlphaComplex(points=points).create_simplex_tree()
+            f = gudhi_to_dio(st)
+        else:
+            raise ValueError("Invalid filtration type. Choose from 'rips' or 'alpha'.")
     boundary_matrices, simplices_at_time, relevant_times, n_simplices_to_time = compute_boundary_matrices(f, compute_n_simplices_to_time=True)
 
     if fill_eigenvalues:
@@ -81,8 +88,14 @@ def petls_Rips_combined(points, threshold, max_dim, round_to = 5, fill_eigenvalu
     else:
         eigenvalues = {q: {s: {t: np.array([]) for t in relevant_times} for s in relevant_times} for q in range(max_dim+1)}
 
-    petls_rips = petls.Rips(points = points, threshold=threshold)
-    eigpairs = petls_rips.eigenpairs(request_list=request_list)
+    if petls_complex is None:
+        if filtration_type == "rips":
+            petls_complex = petls.Rips(points = points, threshold=threshold)
+        elif filtration_type == "alpha":
+            petls_complex = petls.Alpha(points = points, max_dim=max_dim)
+        else:
+            raise ValueError("Invalid filtration type. Choose from 'rips' or 'alpha'.")
+    eigpairs = petls_complex.eigenpairs(request_list=request_list)
     eigenvalues, relevant_times = petls_output_to_eigenvalues(eigpairs, eigenvalues=eigenvalues, round_to=round_to)
 
     if fill_eigenvalues:
@@ -127,7 +140,7 @@ def petls_Rips_combined(points, threshold, max_dim, round_to = 5, fill_eigenvalu
                                     continue
                                 elif t >= s:
                                     if down_evals is None:
-                                        down_evals = return_pos_evals(np.array(petls_rips.eigenpairs(dim=q, a=s, b=s)[0]), tol=tol)
+                                        down_evals = return_pos_evals(np.array(petls_complex.eigenpairs(dim=q, a=s, b=s)[0]), tol=tol)
                                     try:
                                         zero_evals = np.zeros(simplices_at_time[s_i][q] - len(down_evals))
                                     except:
