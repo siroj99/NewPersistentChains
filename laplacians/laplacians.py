@@ -194,7 +194,7 @@ def persistent_Laplacian_eigenvalues(boundary_matrices = None, simplices_at_time
         t_i_bar = tqdm(range(len(relevant_times)), leave=False, desc=f"Computing eigenvalues for q={q}")
         for t_i in t_i_bar:
             for s_i in range(t_i+1):
-                t_i_bar.set_description(f"s_i: {s_i}/{t_i}")
+                t_i_bar.set_description(f"s_i: {s_i}/{t_i}, q={q}")
                 s, t = relevant_times[s_i], relevant_times[t_i]
 
                 Lap = persistent_Laplacian(q, s_i=s_i, t_i=t_i, boundary_matrices=boundary_matrices, simplices_at_time=simplices_at_time, up_only=up_only, inverse_method=inverse_method)
@@ -217,7 +217,7 @@ def horizontal_eigenvalues(boundary_matrices = None, simplices_at_time = None, f
         for s_i in s_i_bar:
             prev_Lap = None
             for t_i in range(s_i, len(relevant_times)):
-                s_i_bar.set_description(f"s_i: {s_i}/{t_i}")
+                s_i_bar.set_description(f"s_i: {s_i}/{t_i}, q={q}")
                 s, t = relevant_times[s_i], relevant_times[t_i]
 
                 Lap = persistent_Laplacian(q, s_i=s_i, t_i=t_i, boundary_matrices=boundary_matrices, simplices_at_time=simplices_at_time, up_only=up_only, inverse_method=inverse_method)
@@ -242,7 +242,7 @@ def vertical_eigenvalues(boundary_matrices = None, simplices_at_time = None, f: 
         for t_i in t_i_bar:
             prev_Lap = None
             for s_i in range(t_i+1):
-                t_i_bar.set_description(f"s_i: {s_i}/{t_i}")
+                t_i_bar.set_description(f"s_i: {s_i}/{t_i}, q={q}")
                 s, t = relevant_times[s_i], relevant_times[t_i]
 
                 Lap = persistent_Laplacian(q, s_i=s_i, t_i=t_i, boundary_matrices=boundary_matrices, simplices_at_time=simplices_at_time, up_only=up_only, inverse_method=inverse_method)

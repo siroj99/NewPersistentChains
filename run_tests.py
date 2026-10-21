@@ -23,7 +23,7 @@ for seed_i in range(2, 25):
                         max_points = 150
                         step_size = 10
                     else:
-                        max_points = 70
+                        max_points = 60
                         step_size = 10
                     seed = seed_i + 2000
             else:
