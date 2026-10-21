@@ -4,7 +4,7 @@ import sys
 
 n_times = 5
 
-for seed_i in range(25):
+for seed_i in range(2, 25):
     for method in ["new_chains", "petls", "petls_combined", "pinv"]:
         for point_set in ["unif2D", "unif3D", "sphere3D", "unif100D"]:
             if point_set in ["unif2D", "sphere3D"]:
@@ -23,10 +23,7 @@ for seed_i in range(25):
                         max_points = 150
                         step_size = 10
                     else:
-                        if method == "petls":
-                            max_points = 80
-                        else:
-                            max_points = 70
+                        max_points = 70
                         step_size = 10
                     seed = seed_i + 2000
             else:
