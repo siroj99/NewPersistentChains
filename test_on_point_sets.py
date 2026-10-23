@@ -26,11 +26,11 @@ def main(method = "new_chains", point_set = "unif3D", seed=0,  n_times = 10, thr
     else:
         results = {}
 
-    total_points = np.loadtxt(f"point_sets/{point_set}/seed={seed}.csv", delimiter=",")
-
     if n_points in results:
         print(f"Results for {n_points} points already exist. Skipping...")
         return
+
+    total_points = np.loadtxt(f"point_sets/{point_set}/seed={seed}.csv", delimiter=",")
     
     print(f"Running for {n_points} points...")
     random_points = total_points[:n_points]

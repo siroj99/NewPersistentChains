@@ -12,18 +12,18 @@ for seed_i in range(25):
                 if point_set == "unif2D":
                     min_points = 10
                     if method in ["new_chains", "petls_combined"]:
-                        max_points = 150
+                        max_points = 200
                     else:
-                        max_points = 80
+                        max_points = 100
                     step_size = 10
                     seed = seed_i
                 elif point_set == "sphere3D":
                     min_points = 10
                     if method in ["new_chains", "petls_combined"]:
-                        max_points = 150
+                        max_points = 200
                         step_size = 10
                     else:
-                        max_points = 70
+                        max_points = 90
                         step_size = 10
                     seed = seed_i + 2000
             else:
