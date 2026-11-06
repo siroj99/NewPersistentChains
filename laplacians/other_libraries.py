@@ -7,28 +7,6 @@ from .new_persistent_chains import standard_algorithm, lowest_nonzero_row, retur
 import gudhi as gd
 from scipy.sparse import coo_matrix
 
-# def gudhi_to_petls(st):
-#     # petls.Alpha only supports 3D points (CGAL Alpha_complex_3d), so build a petls.Complex from a gudhi simplex tree instead.
-#     # We don't use petls.Complex(simplex_tree=st): its helper orders columns by iterating a python set, which breaks
-#     # the correspondence between boundary columns and filtration values for larger complexes.
-#     top_dim = st.dimension()
-#     indices = [{} for _ in range(top_dim+1)]
-#     filtrations = [[] for _ in range(top_dim+1)]
-#     for simplex, t in st.get_filtration():
-#         q = len(simplex) - 1
-#         indices[q][tuple(simplex)] = len(filtrations[q])
-#         filtrations[q].append(t)
-#     boundaries = []
-#     for q in range(1, top_dim+1):
-#         row, col, data = [], [], []
-#         for simplex, j in indices[q].items():
-#             for k in range(q+1):
-#                 row.append(indices[q-1][simplex[:k] + simplex[k+1:]])
-#                 col.append(j)
-#                 data.append((-1)**k)
-#         boundaries.append(coo_matrix((data, (row, col)), shape=(len(filtrations[q-1]), len(filtrations[q]))).toarray())
-#     return petls.Complex(boundaries, filtrations)
-
 def petls_output_to_eigenvalues(spectra, eigenvalues = None, round_to = 5):
     if eigenvalues is None:
         eigenvalues = {}
