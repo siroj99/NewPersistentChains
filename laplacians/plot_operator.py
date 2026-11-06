@@ -351,7 +351,7 @@ def plot_Laplacian_diagram(eigenvalues, plot_type = "min", plot_type_to_fun = {}
     return fig, ax
 
 def plot_combinatorial_eigenvalues(eigenvalues = None, relevant_times = None, f: dio.Filtration = None,
-                                   plot_types = ["min"], plot_type_to_fun = {}, max_dim=1, show=True):
+                                   plot_types = ["min"], plot_type_to_fun = {}, max_dim=1, show=True, labels=None):
     """
     Plots the eigenvalues of the combinatorial Laplacian at all times.
 
@@ -375,7 +375,8 @@ def plot_combinatorial_eigenvalues(eigenvalues = None, relevant_times = None, f:
     fig.tight_layout()
     ax = ax.flatten() if max_dim > 0 else [ax]
 
-    labels = [lambda q : fr'Agg($Spec(\Delta_{q}^t)$)', lambda q : fr'$\beta_{q}$']
+    if labels is None:
+        labels = [lambda q : fr'Agg($Spec(\Delta_{q}^t)$)', lambda q : fr'$\beta_{q}$']
 
     for q in range(max_dim+1):
         x_axis = []
@@ -416,10 +417,10 @@ def plot_combinatorial_eigenvalues(eigenvalues = None, relevant_times = None, f:
         
         ax[q].set_title(f"q={q}")
         ax[q].set_ylim(0, np.max([np.nanmax(y_lap[type_i])*1.1 for type_i in range(len(plot_types))]))
-        ax[q].set_ylabel(labels[0](q), fontsize=20)
+        ax[q].set_ylabel(labels[0](q), fontsize=15)
         # ax[q].yaxis.label.set_color(p1.get_color())
 
-        ax_betti.set_ylabel(labels[1](q), fontsize=20)
+        ax_betti.set_ylabel(labels[1](q), fontsize=15)
         ax_betti.set_ylim(0, np.nanmax(y_betti)+1)
         ax_betti.set_yticks(range(0, int(np.nanmax(y_betti))+2))
         ax_betti.yaxis.label.set_color(p2.get_color())
@@ -427,7 +428,7 @@ def plot_combinatorial_eigenvalues(eigenvalues = None, relevant_times = None, f:
         ax[q].legend(handles=plots, loc='upper left')
         # ax_betti.legend()
 
-    ax[-1].set_xlabel('Time', fontsize=20)
+    ax[-1].set_xlabel('Time (s)', fontsize=15)
 
     if show:
         fig.show()
