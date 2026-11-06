@@ -1,5 +1,5 @@
 from .general import time_to_idx, compute_boundary_matrices, gudhi_to_dio
-from .multiplicity import complete_multiplicity_operator_eigenvalues
+from .new_persistent_chains import new_persistent_chains
 from .plot_complex import draw_filtration
 from .plot_operator import plot_persistence_diagrams, plot_eigenvalues, plot_Laplacian_diagram, plot_combinatorial_eigenvalues
 from .laplacians import combinatorial_Laplacian, combinatorial_Laplacian_eigenvalues, persistent_Laplacian, persistent_Laplacian_eigenvalues, horizontal_eigenvalues, vertical_eigenvalues
@@ -9,7 +9,7 @@ __all__ = [
     "time_to_idx",
     "compute_boundary_matrices",
     "gudhi_to_dio",
-    "complete_multiplicity_operator_eigenvalues",
+    "new_persistent_chains",
     "draw_filtration",
     "plot_persistence_diagrams",
     "plot_eigenvalues",

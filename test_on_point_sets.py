@@ -46,7 +46,7 @@ def main(method = "new_chains", point_set = "unif3D", seed=0,  n_times = 10, thr
 
         for time_i in range(n_times):
             stime = time.time()
-            eigenvalues, relevant_times = complete_multiplicity_operator_eigenvalues(f=f, max_dim=3, up_only=False, fill_eigenvalues=True)
+            eigenvalues, relevant_times = new_persistent_chains(f=f, max_dim=3, up_only=False, fill_eigenvalues=True)
             results[n_points][str(time_i)] = time.time() - stime
 
 

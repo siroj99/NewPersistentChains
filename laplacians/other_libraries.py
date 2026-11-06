@@ -3,7 +3,7 @@ import numpy as np
 from copy import deepcopy
 import dionysus as dio
 from.general import compute_boundary_matrices, time_to_idx, gudhi_to_dio
-from .multiplicity import standard_algorithm, lowest_nonzero_row, return_pos_evals
+from .new_persistent_chains import standard_algorithm, lowest_nonzero_row, return_pos_evals
 import gudhi as gd
 from scipy.sparse import coo_matrix
 

@@ -106,10 +106,9 @@ def standard_algorithm(B, tol=1e-10, max_iter=1000):
 def return_pos_evals(eigenvalues, tol=1e-10):
     return np.array([ev for ev in eigenvalues if ev > tol])
 
-def complete_multiplicity_operator_eigenvalues(boundary_matrices = None, simplices_at_time = None, relevant_times = None, f: dio.Filtration = None, 
+def new_persistent_chains(boundary_matrices = None, simplices_at_time = None, relevant_times = None, f: dio.Filtration = None, 
                                         weight_fun = lambda x: 1, min_dim = 0, max_dim = 1, verb = False, up_only = False, fill_eigenvalues = False):
     """
-    Computes the eigenvalues of the persistent multiplicity operator for each combination of start and end times in a filtration, given Multiplicity function.
     NOTE: Either give boundary_matrices, simplices_at_time and relevant_times or give filtration f.
 
     Args:
@@ -120,8 +119,9 @@ def complete_multiplicity_operator_eigenvalues(boundary_matrices = None, simplic
         weight_fun (function, optional): Function to compute weights for simplices.
         min_dim (int, optional): Minimum dimension to compute eigenvalues for.
         max_dim (int, optional): Maximum dimension to compute eigenvalues for.
-        Multiplicity_fun (function, optional): Function to compute the multiplicity operator given projection matrices
-        compute_only_trace (bool, optional): If True, only compute the trace of the multiplicity operator instead of all eigenvalues. Reduces computation time slightly.
+        verb (bool, optional): If True, print verbose output.
+        up_only (bool, optional): If True, only compute the upper triangular part of the boundary matrices.
+        fill_eigenvalues (bool, optional): If True, fill the eigenvalues with zeros if they are not available.
 
     Returns:
         eigenvalues (dict): Dictionary containing eigenvalues for each dimension and time pair.
